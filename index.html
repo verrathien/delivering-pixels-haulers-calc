@@ -30,7 +30,7 @@
             });
 
             // Puts commas in input field
-            $('#jumps').keyup(function (event) {
+            $('#amountm3').keyup(function (event) {
                 // skip for arrow keys
                 if (event.which >= 37 && event.which <= 40) return;
                 // format number
@@ -57,81 +57,81 @@
                 copyTextToClipboard(stuff_to_copy_to_clipboard);
             });
 
-            $('#collateral_label').click(function () {
-                $('#collateral_label').addClass('active');
-            })
-
-            $('#jumps_label').click(function () {
-                $('#jumps_label').addClass('active');
-            })
-
-            $('html').click(function () {
+            function calc() {
                 // Reward Rates by Rita Jita, site made by Rashad Charante
                 var collateral = $('#collateral').val();
                 // Sanitizes inputs by getting rid of commas and other stuff
                 collateral = collateral.replace(/[^\d\.\-\ ]/g, '');
-                var jumps = $('#jumps').val();
-                jumps = jumps.replace(/[^\d\.\-\ ]/g, '');
-                // Set a basic minimum percentage of the collateral that we will take.
-                var baseColPercentage = 0.005;
-                // Set a basic pickup fee to this percentage of the collateral
-                // This will be capped to 1% maximum further down.
-                var pickupFee = 0;
-                // Set the minimum/basic price per jump
-                var pricePerJump = 500000;
-                // Increase the precentage of the collateral that we take based on jumps by this percentage
-                // This is to reflect the increased risk and time spent by the hauler.
-                var incPerJump = 1.002;
-                var pickupReward = 0;
+                var amountm3 = $('#amountm3').val();
+                amountm3 = amountm3.replace(/[^\d\.\-\ ]/g, '');
+                var system = $('#system').val();
+
                 var reward = 0;
-                var baseRate = 0;
                 // Shamelessly ripped from stack overflow
                 function numberWithCommas(x) {
                     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
 
-                // Let's do some magic then
-                baseRate = pricePerJump * jumps;
-
-                for (i = 1; i < jumps; i++) {
-                    baseColPercentage += 0.001;
-                    if (baseColPercentage >= 0.01) { break; }
-                }
-
-                pickupFee = collateral * baseColPercentage;
-                pickupReward = pickupFee * incPerJump ^ jumps;
-                reward = baseRate + pickupReward;
-
-                if (collateral * 0.001 * jumps > reward) {
-                    reward = collateral * 0.001 * jumps;
-                }
-
-                if (reward >= (collateral * 0.5)) {
-                    reward = collateral * 0.3;
-                }
-
-                // Let's round up to make it look purdy
-                reward = Math.round(reward / 1000) * 1000;
-
+                var collatMultiplier = 0.01;
+                var iskPerM3Multiplier = 1.0;
                 // Extra Fees
                 if ($('#rush').prop('checked')) {
-                    reward = reward * 2;
+                    iskPerM3Multiplier = 2.5;
+                    collatMultiplier = 0.02;
                 }
 
-                if ($('#lowsec').prop('checked')) {
-                    reward = reward * 2;
+                var iskPerM3 = 0;
+                var totalJumps = 1;
+                switch (system) {
+                    case "D-P":
+                        iskPerM3 = 960 * iskPerM3Multiplier;
+                        totalJumps = 54;
+                        break;
+                    case "DTX":
+                        iskPerM3 = 930 * iskPerM3Multiplier;
+                        totalJumps = 52;
+                        break;
+                    case "IR-":
+                        iskPerM3 = 980 * iskPerM3Multiplier;
+                        totalJumps = 56;
+                        break;
+                    case "6-T":
+                        iskPerM3 = 1000 * iskPerM3Multiplier;
+                        totalJumps = 57;
+                        break;
+                    case "U-Q":
+                        iskPerM3 = 800 * iskPerM3Multiplier;
+                        totalJumps = 28;
+                        break;
                 }
+
+                if (collateral > 0 && amountm3 > 0) {
+                    reward = amountm3 * iskPerM3 + collateral * collatMultiplier;
+
+                    if (reward < 5000000)
+                        reward = 500000;
+
+                    // Let's round up to make it look purdy
+                    reward = Math.round(reward / 1000) * 1000;
+                }
+
                 // updates prices displayed in text
                 if (reward > 0) {
                     $('#reward_label').addClass('active');
                     $('#reward_ipj_label').addClass('active');
                     $('#reward').val(numberWithCommas(reward.toFixed(2)));
-                    var ipj = reward / jumps
+                    var ipj = reward / totalJumps;
                     ipj = ipj.toFixed(2);
                     $('#reward_ipj').val(numberWithCommas(ipj));
                     stuff_to_copy_to_clipboard = reward;
                 }
-            });
+            }
+
+            $('#amountm3').on('input', calc);
+            $('#collateral').on('input', calc);
+            $('#system').on('change', calc);
+
+            $('html').click(calc);
         });
     </script>
 </head>
@@ -154,20 +154,25 @@
                                 <form class="col s12">
                                     <div class="row">
                                         <div class="input-field col s12">
+                                            <input id="amountm3" type="text" class="validate">
+                                            <label id="amountm3_label" for="amountm3">Cargo Size M<sup>3</sup></label>
+                                        </div>
+                                        <div class="input-field col s12">
                                             <input id="collateral" type="text" class="validate">
                                             <label id="collateral_label" for="collateral">Collateral</label>
                                         </div>
                                         <div class="input-field col s12">
                                             <select id="system">
-                                                <option value="1">D-P</option>
-                                                <option value="2">DTX</option>
-                                                <option value="3">IR-</option>
-                                                <option value="4">6-T</option>
+                                                <option value="D-P">D-P</option>
+                                                <option value="DTX">DTX</option>
+                                                <option value="IR-">IR-</option>
+                                                <option value="6-T">6-T</option>
+                                                <option value="U-Q">U-Q</option>
                                             </select>
                                             <label id="system_label" for="system">System</label>
                                         </div>
                                         <p class="left-align" style="margin-left: 10px">
-                                            <input type="checkbox" class="filled-in" id="rush" />
+                                            <input type="checkbox" class="filled-in" id="rush" disabled="disabled" />
                                             <label for="rush">Rush Delivery &nbsp;&nbsp;</label>
                                         </p>
                                     </div>
@@ -194,7 +199,6 @@
                     </div>
                     <!-- Footer -->
                     <div class="disclaimer_footer">
-                        <p class="center-align" style="color: #ffb2b2">For discounts, join Pixels Hauling mailing list. Bulk orders accepted.</p>
                         <p class="center-align" style="color: #FFFFFF"><span style="color: yellow">Disclaimer: </span>The Final Price is entirely up to yourself.</p>
                         <p class="center-align" style="color: #FFFFFF"> This calculator is intended for people new to courier contracts, anything under</p>
                         <p class="center-align" style="color: #FFFFFF">these values will normally move slower than normal., and possibly not at all.</p>
