@@ -109,7 +109,7 @@
                     reward = amountm3 * iskPerM3 + collateral * collatMultiplier;
 
                     if (reward < 5000000)
-                        reward = 500000;
+                        reward = 5000000;
 
                     // Let's round up to make it look purdy
                     reward = Math.round(reward / 1000) * 1000;
@@ -142,7 +142,7 @@
                 <div class="row">
                     <!-- Header -->
                     <div class="header col s12">
-                        <h1 class="center-align title" style="color: #FFFFFF; font-size: 8em">Pixels Haulers</h1>
+                        <h1 class="center-align title" style="color: #FFFFFF; font-size: 8em">Pixel Haulers</h1>
                         <h4 class="grey-text darken-3 center-align title" style="margin-top: -20px; margin-bottom: 60px; font-size: 4.5em">Base Rate Calculator</h4>
                     </div>
                     <!--<hr>-->
@@ -203,6 +203,7 @@
                         <p class="center-align" style="color: #FFFFFF"> This calculator is intended for people new to courier contracts, anything under</p>
                         <p class="center-align" style="color: #FFFFFF">these values will normally move slower than normal., and possibly not at all.</p>
                         <p class="center-align" style="color: #FFFFFF"><strong>Note: <i>The more you pay </i> = the less you wait.</strong></p>
+                        <p class="center-align" style="color: #FFFFFF">Credits: This site is a fork from <strong><a href="https://github.com/JCharante/haulers-channel-reward-calc">https://github.com/JCharante/haulers-channel-reward-calc</a></strong>. JCharante, you are awesome!</p>
                     </div>
                 </div>
             </div>
