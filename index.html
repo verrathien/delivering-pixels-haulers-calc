@@ -105,15 +105,19 @@
                         break;
                 }
 
-                if (collateral > 0 && amountm3 > 0) {
-                    reward = amountm3 * iskPerM3 + collateral * collatMultiplier;
+                if (amountm3 === undefined || amountm3 == null || isNaN(amountm3) === true)
+                    amountm3 = 0;
 
-                    if (reward < 5000000)
-                        reward = 5000000;
+                if (collateral === undefined || collateral == null || isNaN(collateral) === true)
+                    collateral = 0;
+                
+                reward = amountm3 * iskPerM3 + collateral * collatMultiplier;
 
-                    // Let's round up to make it look purdy
-                    reward = Math.round(reward / 1000) * 1000;
-                }
+                if (reward < 5000000)
+                    reward = 5000000;
+
+                // Let's round up to make it look purdy
+                reward = Math.round(reward / 1000) * 1000;
 
                 // updates prices displayed in text
                 if (reward > 0) {
