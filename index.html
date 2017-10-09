@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <head>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <title>Delivering Pixels Haulers - Base Rate Calculator</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
@@ -9,7 +10,7 @@
     <link rel="stylesheet" href="hauling.css">
     <script src="utils.js"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Materialize select
             $('select').material_select();
 
@@ -17,42 +18,40 @@
             var stuff_to_copy_to_clipboard = "";
 
             // Puts commas in input field
-            $('#collateral').keyup(function (event) {
+            $('#collateral').keyup(function(event) {
                 // skip for arrow keys
                 if (event.which >= 37 && event.which <= 40) return;
                 // format number
-                $(this).val(function (index, value) {
+                $(this).val(function(index, value) {
                     return value
                         .replace(/\D/g, "")
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                        ;
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 });
             });
 
             // Puts commas in input field
-            $('#amountm3').keyup(function (event) {
+            $('#amountm3').keyup(function(event) {
                 // skip for arrow keys
                 if (event.which >= 37 && event.which <= 40) return;
                 // format number
-                $(this).val(function (index, value) {
+                $(this).val(function(index, value) {
                     return value
                         .replace(/\D/g, "")
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                        ;
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 });
             });
 
-            $('.output_area').click(function () {
+            $('.output_area').click(function() {
                 // Copies price to clipboard when the output area is clicked
                 copyTextToClipboard(stuff_to_copy_to_clipboard);
             });
 
-            $('.disclaimer_footer').click(function () {
+            $('.disclaimer_footer').click(function() {
                 // Copies price to clipboard when the output area is clicked
                 copyTextToClipboard(stuff_to_copy_to_clipboard);
             });
 
-            $('.header').click(function () {
+            $('.header').click(function() {
                 // Copies price to clipboard when the output area is clicked
                 copyTextToClipboard(stuff_to_copy_to_clipboard);
             });
@@ -67,6 +66,7 @@
                 var system = $('#system').val();
 
                 var reward = 0;
+
                 // Shamelessly ripped from stack overflow
                 function numberWithCommas(x) {
                     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -83,26 +83,26 @@
                 var iskPerM3 = 0;
                 var totalJumps = 1;
                 switch (system) {
-                    case "D-P":
-                        iskPerM3 = 800 * iskPerM3Multiplier;
-                        totalJumps = 54;
-                        break;
-                    case "DTX":
-                        iskPerM3 = 780 * iskPerM3Multiplier;
-                        totalJumps = 52;
-                        break;
-                    case "IR-":
-                        iskPerM3 = 850 * iskPerM3Multiplier;
-                        totalJumps = 56;
-                        break;
-                    case "6-T":
-                        iskPerM3 = 900 * iskPerM3Multiplier;
-                        totalJumps = 57;
-                        break;
-                    case "U-Q":
-                        iskPerM3 = 750 * iskPerM3Multiplier;
-                        totalJumps = 28;
-                        break;
+                case "D-P":
+                    iskPerM3 = 800 * iskPerM3Multiplier;
+                    totalJumps = 54;
+                    break;
+                case "DTX":
+                    iskPerM3 = 780 * iskPerM3Multiplier;
+                    totalJumps = 52;
+                    break;
+                case "IR-":
+                    iskPerM3 = 850 * iskPerM3Multiplier;
+                    totalJumps = 56;
+                    break;
+                case "6-T":
+                    iskPerM3 = 900 * iskPerM3Multiplier;
+                    totalJumps = 57;
+                    break;
+                case "U-Q":
+                    iskPerM3 = 750 * iskPerM3Multiplier;
+                    totalJumps = 28;
+                    break;
                 }
 
                 if (amountm3 === undefined || amountm3 == null || isNaN(amountm3) === true)
@@ -110,7 +110,7 @@
 
                 if (collateral === undefined || collateral == null || isNaN(collateral) === true)
                     collateral = 0;
-                
+
                 reward = amountm3 * iskPerM3 + collateral * collatMultiplier;
 
                 if (reward < 5000000)
